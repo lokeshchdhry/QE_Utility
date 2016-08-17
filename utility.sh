@@ -95,6 +95,11 @@ echo Android FaceBook Modules Installed :$facebook_ver
 cd /Users/lokeshchoudhary/Library/Application\ Support/Titanium/modules/commonjs/ti.cloud
 cloud_ver=$(ls -dm *)
 echo Ti.Cloud Versions Installed :$cloud_ver
+
+cd /Users/lokeshchoudhary/Library/Application\ Support/Titanium/modules/android/hyperloop
+hyperloop_ver=$(ls -dm *)
+echo Android Hyperloop Versions Installed :$hyperloop_ver
+
 cd ~/Desktop
 }
 
@@ -110,6 +115,11 @@ echo IOS Facebook Modules Installed :$ios_fb_mod_ver
 cd /Users/lokeshchoudhary/Library/Application\ Support/Titanium/modules/iphone/ti.coremotion
 ios_coremotion_mod_ver=$(ls -dm *)
 echo IOS Coremotion Modules Installed :$ios_coremotion_mod_ver
+
+cd /Users/lokeshchoudhary/Library/Application\ Support/Titanium/modules/iphone/hyperloop
+ios_hyperloop_ver=$(ls -dm *)
+echo IOS Hyperloop Versions Installed :$ios_hyperloop_ver
+
 cd ~/Desktop
 }
 
