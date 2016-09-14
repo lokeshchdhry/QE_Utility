@@ -1,6 +1,6 @@
 #!/bin/bash
-username="--------Your Username----------"
-password="--------Your Password----------"
+username="-----Username-------"
+password="-----Password-------"
 
 bold=$(tput bold)
 normal=$(tput sgr0)
@@ -15,6 +15,7 @@ check_env(){
 	g="/usr/bin/xcodebuild -version"
 	h="node -v"
 	i="appc whoami"
+	j="java -version"
 
 	echo
 	echo ${bold}MAC VERSION:${normal}
@@ -25,6 +26,11 @@ check_env(){
 	echo ${bold}XCODE VERSION:${normal}
 	echo -------------
 	$g
+
+	echo
+	echo ${bold}JAVA VERSION:${normal}
+	echo -------------
+	$j
 
 	echo
 	echo ${bold}APPC CLI AND APPC NPM VERSION:${normal}
@@ -66,6 +72,10 @@ check_env(){
     check_ios_module_ver
     echo
 
+    echo ${bold}PLUGINS INSTALLED:${normal}
+    echo ----------------------
+    check_hyperloop_plugin_ver
+    echo
 
 	echo ${bold}STUDIO VERSION:${normal}
 	echo        ---------------
@@ -80,37 +90,59 @@ check_env(){
 }
 
 check_android_module_ver(){
-cd /Users/lokeshchoudhary/Library/Application\ Support/Titanium/modules/android/ti.map/
-map_ver=$(ls -dm *)
-echo Android Map Module Versions Installed :$map_ver
+	cd /Users/lchoudhary/Library/Application\ Support/Titanium/modules/android/ti.map/
+	map_ver=$(ls -dm *)
+	echo Android Map Module Versions Installed: $map_ver
 
-cd /Users/lokeshchoudhary/Library/Application\ Support/Titanium/modules/android/ti.cloudpush
-cloudpush_ver=$(ls -dm *)
-echo CloudPush Versions Installed :$cloudpush_ver
+	cd /Users/lchoudhary/Library/Application\ Support/Titanium/modules/android/ti.cloudpush
+	cloudpush_ver=$(ls -dm *)
+	echo CloudPush Versions Installed: $cloudpush_ver
 
-cd /Users/lokeshchoudhary/Library/Application\ Support/Titanium/modules/android/facebook
-facebook_ver=$(ls -dm *)
-echo Android FaceBook Modules Installed :$facebook_ver
+	cd /Users/lchoudhary/Library/Application\ Support/Titanium/modules/android/facebook
+	facebook_ver=$(ls -dm *)
+	echo Android FaceBook Modules Installed: $facebook_ver
 
-cd /Users/lokeshchoudhary/Library/Application\ Support/Titanium/modules/commonjs/ti.cloud
-cloud_ver=$(ls -dm *)
-echo Ti.Cloud Versions Installed :$cloud_ver
-cd ~/Desktop
+	cd /Users/lchoudhary/Library/Application\ Support/Titanium/modules/commonjs/ti.cloud
+	cloud_ver=$(ls -dm *)
+	echo Ti.Cloud Versions Installed: $cloud_ver
+
+	cd /Users/lchoudhary/Library/Application\ Support/Titanium/modules/android/hyperloop
+	hyperloop_ver=$(ls -dm *)
+	echo Hyperloop Versions Installed: $hyperloop_ver
+
+	cd /Users/lchoudhary/Library/Application\ Support/Titanium/modules/android/com.appcelerator.aca
+	aca_ver=$(ls -dm *)
+	echo ACA Versions Installed: $aca_ver
+	cd ~/Desktop
 }
 
 check_ios_module_ver(){
-cd /Users/lokeshchoudhary/Library/Application\ Support/Titanium/modules/iphone/ti.map
-ios_map_ver=$(ls -dm *)
-echo IOS Map Modules Installed :$ios_map_ver
+	cd /Users/lchoudhary/Library/Application\ Support/Titanium/modules/iphone/ti.map
+	ios_map_ver=$(ls -dm *)
+	echo IOS Map Modules Installed: $ios_map_ver
 
-cd /Users/lokeshchoudhary/Library/Application\ Support/Titanium/modules/iphone/facebook
-ios_fb_mod_ver=$(ls -dm *)
-echo IOS Facebook Modules Installed :$ios_fb_mod_ver
+	cd /Users/lchoudhary/Library/Application\ Support/Titanium/modules/iphone/facebook
+	ios_fb_mod_ver=$(ls -dm *)
+	echo IOS Facebook Modules Installed: $ios_fb_mod_ver
 
-cd /Users/lokeshchoudhary/Library/Application\ Support/Titanium/modules/iphone/ti.coremotion
-ios_coremotion_mod_ver=$(ls -dm *)
-echo IOS Coremotion Modules Installed :$ios_coremotion_mod_ver
-cd ~/Desktop
+	cd /Users/lchoudhary/Library/Application\ Support/Titanium/modules/iphone/ti.coremotion
+	ios_coremotion_mod_ver=$(ls -dm *)
+	echo IOS Coremotion Modules Installed: $ios_coremotion_mod_ver
+
+	cd /Users/lchoudhary/Library/Application\ Support/Titanium/modules/iphone/hyperloop
+	hyperloop_ver=$(ls -dm *)
+	echo Hyperloop Versions Installed: $hyperloop_ver
+
+	cd /Users/lchoudhary/Library/Application\ Support/Titanium/modules/iphone/com.appcelerator.aca
+	aca_ver=$(ls -dm *)
+	echo ACA Versions Installed: $aca_ver
+	cd ~/Desktop
+}
+
+check_hyperloop_plugin_ver(){
+	cd /Users/lchoudhary/Library/Application\ Support/Titanium/plugins/hyperloop
+	hyperloop_plugin_ver=$(ls -dm *)
+	echo Hyperloop Plugin Installed: $hyperloop_plugin_ver
 }
 
 to_prod(){
@@ -321,7 +353,8 @@ CHANGELOGS:
 \nVer.0.4: -->Added functionality to remove node from system.\n
 \nVer.0.5: -->Removed functionality to remove node as it did not work as expected.
 \n         -->Added functionality to get the versions of Ti.map, facebook, Ti.cloudpush & Ti.cloud modules.\n
-\nVer.0.6: -->Added functionality to installed module versions fopr IOS.
+\nVer.0.6: -->Added functionality to installed module versions fopr IOS.\n
+\nVer.0.6.2-->Added functionality to check for Java version & hyperloop module ver, hyperloop plugin
 "
 
 # set an infinite loop
@@ -329,7 +362,7 @@ while :
 do
         # display menu
     echo
-    echo "QE UTILITY Ver:0.6.1"
+    echo "QE UTILITY Ver:0.6.2"
 	echo "||===============================||"
 	echo "||    WHAT DO YOU WANT TO DO     ||"
 	echo "||===============================||"
