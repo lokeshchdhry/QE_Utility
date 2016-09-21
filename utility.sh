@@ -1,6 +1,6 @@
 #!/bin/bash
-username="-----Username-------"
-password="-----Password-------"
+username="-----username------"
+password="-----password------"
 
 bold=$(tput bold)
 normal=$(tput sgr0)
@@ -251,6 +251,47 @@ install_sdk(){
 	fi
 }
 
+install_specific_sdk(){
+	en1=$(appc whoami| grep -o 'preprod')
+	en2=$(appc whoami|grep -o 'prod')
+	if [ "$en1" == "preprod" ]; then
+			echo
+			echo "||=======================================================================||"
+			echo "||  YOU ARE IN PREPROD GOING TO PROD TO USE APPC COMMAND TO GET THE SDK  ||"
+			echo "||=======================================================================||"
+			to_prod
+			echo ${bold}INSTALLING SDK AND SETTING AS DEFAULT:${normal}
+			echo --------------------------------------
+			echo -n "Enter the sdk version to install :"
+			read sdk_ver
+			appc ti sdk install $sdk_ver --default
+			echo
+			echo DONE
+			echo
+			echo "||==============================================||"
+			echo "||           GOING BACK TO PREPROD              ||"
+			echo "||==============================================||"
+			to_preprod
+			echo
+			echo DONE
+	else
+		if [ "$en2" == "prod" ]; then
+				echo
+				echo "||==========================================================||"
+				echo "||  YOU ARE IN PROD, I CAN USE APPC COMMAND TO GET THE SDK  ||"
+				echo "||==========================================================||"
+				echo
+				echo ${bold}INSTALLING SDK AND SETTING AS DEFAULT:${normal}
+				echo --------------------------------------
+				echo -n "Enter the sdk version to install :"
+				read $sdk_ver
+				appc ti sdk install $sdk_ver --default
+				echo
+				echo DONE
+		fi
+	fi
+}
+
 install_GA_sdk(){
 	arg1=$1
 	en1=$(appc whoami| grep -o 'preprod')
@@ -263,7 +304,11 @@ install_GA_sdk(){
 			to_prod
 			echo ${bold}INSTALLING SDK AND SETTING AS DEFAULT:${normal}
 			echo --------------------------------------
-			appc ti sdk install $arg1 -d
+			appc ti sdk install $arg1
+			echo
+			echo "Setting SDK $arg1 as default. Please wait ....."
+			echo
+			appc ti sdk select $arg1
 			echo
 			echo DONE
 			echo
@@ -316,6 +361,17 @@ install_GA_compo(){
 	fi
 }
 
+select_specific_sdk(){
+	echo
+	echo ${bold}SELECTING SPECIFIC SDK:${normal}
+	echo -------------------------------
+	echo -n "Enter the SDK version to select :"
+	read sdk
+	appc ti sdk select $sdk
+	echo
+	echo DONE
+}
+
 quit(){
 	echo
 	for pid in `ps -ef | grep utility.sh | awk '{print $3}'` ;
@@ -354,7 +410,8 @@ CHANGELOGS:
 \nVer.0.5: -->Removed functionality to remove node as it did not work as expected.
 \n         -->Added functionality to get the versions of Ti.map, facebook, Ti.cloudpush & Ti.cloud modules.\n
 \nVer.0.6: -->Added functionality to installed module versions fopr IOS.\n
-\nVer.0.6.2-->Added functionality to check for Java version & hyperloop module ver, hyperloop plugin
+\nVer.0.6.2-->Added functionality to check for Java version & hyperloop module ver, hyperloop plugin\n
+\nVer.0.6.3-->Added functionality to select specific SDK.
 "
 
 # set an infinite loop
@@ -362,7 +419,7 @@ while :
 do
         # display menu
     echo
-    echo "QE UTILITY Ver:0.6.2"
+    echo "QE UTILITY Ver:0.6.3"
 	echo "||===============================||"
 	echo "||    WHAT DO YOU WANT TO DO     ||"
 	echo "||===============================||"
@@ -370,12 +427,14 @@ do
 	echo "2. INSTALL APPC CORE."
 	echo "3. INSTALL APPC NPM."
 	echo "4. INSTALL TITANIUM SDK."
-	echo "5. INSTALL ALL(Core, Appc NPM, SDK)."
-	echo "6. INSTALL ALL CURRENT GA COMPONENTS."
-	echo "7. CHANGE ENV TO PRODUCTION."
-	echo "8. CHANGE ENV TO PRE-PRODUCTION."
-	echo "9. VIEW CHANGELOGS."
-	echo "10.Exit."
+	echo "5. INSTALL SPECIFIC TITANIUM SDK."
+	echo "6. SELECT SPECIFIC TITANIUM SDK."
+	echo "7. INSTALL ALL(Core, Appc NPM, SDK)."
+	echo "8. INSTALL ALL CURRENT GA COMPONENTS."
+	echo "9. CHANGE ENV TO PRODUCTION."
+	echo "10.CHANGE ENV TO PRE-PRODUCTION."
+	echo "11.VIEW CHANGELOGS."
+	echo "12.Exit."
 	echo
         # get input from the user
 	read -p "Enter your choice :" choice
@@ -398,29 +457,37 @@ do
 			install_sdk
 			;;
 		5)
+			#Install SDK
+			install_specific_sdk
+			;;
+		6)
+			#Install SDK
+			select_specific_sdk
+			;;
+		7)
 			#Install All
 			install_core
 			install_appc_npm
 			install_sdk
 			;;
-		6)
+		8)
 			#Install all current GA components
 			install_GA_compo
 			;;
-		7)
+		9)
 			#Change to production
 			to_prod
 			;;
-		8)
+		10)
 			#Change to pre-production
 			to_preprod
 			;;
-		9)
+		11)
 			#View Changelogs
 			echo
 			echo -e$logs
 			;;
-		10)
+		12)
 			#Quit
 			echo "Bye!"
 			quit
