@@ -1,6 +1,6 @@
 #!/bin/bash
-username="-----username------"
-password="-----password------"
+username="----- Username -------"
+password="----- Password -------" 
 
 bold=$(tput bold)
 normal=$(tput sgr0)
@@ -346,7 +346,7 @@ install_GA_compo(){
 		npm_var=$(curl -s -L $GA_url |awk -F "Appc_npm=" '{print $2}')
 		core_var=$(curl -s -L $GA_url |awk -F "Appc_core=" '{print $2}')
 
-		echo ${bold}Current GA Components:${normal}
+		echo ${bold}$GA_version.GA Components:${normal}
 		echo ----------------------
 		echo SDK: $sdk_var
 		echo Appc NPM: $npm_var
@@ -370,6 +370,56 @@ select_specific_sdk(){
 	appc ti sdk select $sdk
 	echo
 	echo DONE
+}
+
+get_current_env(){
+	a="appc -v -o json"
+	b="appc ti -v"
+	c="appc alloy -v"
+	d="appc ti sdk"
+	f="sw_vers -productVersion"
+	g="/usr/bin/xcodebuild -version"
+	h="node -v"
+	i="appc whoami"
+	j="javac -version"
+
+	k="$(adb devices|awk -F 'device' '{print $1}'|sed '1d'|tr -d '\n'|tr '[[:blank:]]/' ','|awk -v b=1 -F ',' '{print $b}')"
+	if [ "$k" != "" ]; then
+		device="$(adb -s $k shell getprop ro.product.model)"
+		device_os=" running $(adb -s $k shell getprop ro.build.version.release)"
+		device_os+=$device
+	else
+		device_os="No device attached"
+	fi
+
+	echo "----------------------------------------------------------"
+	
+	echo
+
+	std=$(grep -n -i "VERSION" /Applications/"Appcelerator Studio"/version.txt|awk -F "VERSION" '{print $2}'|cut -c2-19)
+	echo Appc Studio : $std
+
+	echo SDK Version : $($d|grep -i 'selected'| cut -c4-25)
+
+	echo Mac OS Version : $($f)
+
+	echo Xcode Version : $($g)
+	
+	echo Appc CLI AND Appc NPM : $($a)
+
+	echo Ti CLI : $($b)
+
+	echo Alloy : $($c)
+
+	echo Node : $($h)
+
+	echo Device: $device_os
+
+	echo Environment: $($i|grep "$username"|grep "organization"|cut -c50-)
+
+	echo
+
+	echo "----------------------------------------------------------"
 }
 
 quit(){
@@ -410,8 +460,9 @@ CHANGELOGS:
 \nVer.0.5: -->Removed functionality to remove node as it did not work as expected.
 \n         -->Added functionality to get the versions of Ti.map, facebook, Ti.cloudpush & Ti.cloud modules.\n
 \nVer.0.6: -->Added functionality to installed module versions fopr IOS.\n
-\nVer.0.6.2-->Added functionality to check for Java version & hyperloop module ver, hyperloop plugin\n
-\nVer.0.6.3-->Added functionality to select specific SDK.
+\nVer.0.6.2-->Added functionality to check for Java version & hyperloop module ver, hyperloop plugin.\n
+\nVer.0.6.3-->Added functionality to select specific SDK.\n
+\nVer.0.6.4-->Added functionality to get components to paste in JIRA tickets.
 "
 
 # set an infinite loop
@@ -419,7 +470,7 @@ while :
 do
         # display menu
     echo
-    echo "QE UTILITY Ver:0.6.3"
+    echo "QE UTILITY Ver:0.6.4"
 	echo "||===============================||"
 	echo "||    WHAT DO YOU WANT TO DO     ||"
 	echo "||===============================||"
@@ -433,8 +484,9 @@ do
 	echo "8. INSTALL ALL CURRENT GA COMPONENTS."
 	echo "9. CHANGE ENV TO PRODUCTION."
 	echo "10.CHANGE ENV TO PRE-PRODUCTION."
-	echo "11.VIEW CHANGELOGS."
-	echo "12.Exit."
+	echo "11.GET CURRENT ENVIRONMENT FOR COPYING TO JIRA TICKETS."
+	echo "12.VIEW CHANGELOGS."
+	echo "13.Exit."
 	echo
         # get input from the user
 	read -p "Enter your choice :" choice
@@ -483,11 +535,16 @@ do
 			to_preprod
 			;;
 		11)
+			#Get current environment for jira tickets
+			get_current_env
+			;;
+
+		12)
 			#View Changelogs
 			echo
 			echo -e$logs
 			;;
-		12)
+		13)
 			#Quit
 			echo "Bye!"
 			quit
